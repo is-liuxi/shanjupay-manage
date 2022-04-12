@@ -1,0 +1,38 @@
+2022-04-11 22:08:21,064 ERROR [main][LoggingFailureAnalysisReporter.java:42] - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to bind properties under 'spring.http.encoding.charset' to java.nio.charset.Charset:
+
+    Property: spring.http.encoding.charset
+    Value: UTF‐8
+    Origin: "spring.http.encoding.charset" from property source "bootstrapProperties"
+    Reason: failed to convert java.lang.String to java.nio.charset.Charset
+
+Action:
+
+Update your application's configuration
+
+2022-04-11 22:10:02,121 ERROR [main][LoggingFailureAnalysisReporter.java:42] - 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to bind properties under 'spring.http.encoding.charset' to java.nio.charset.Charset:
+
+    Property: spring.http.encoding.charset
+    Value: UTF‐8
+    Origin: "spring.http.encoding.charset" from property source "bootstrapProperties"
+    Reason: failed to convert java.lang.String to java.nio.charset.Charset
+
+Action:
+
+Update your application's configuration
+

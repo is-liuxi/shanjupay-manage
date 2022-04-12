@@ -1,0 +1,55 @@
+server:
+  port: 56040
+###################################################
+spring:
+  application:
+    name: merchant-service
+  cloud:
+    nacos:
+      # 注册中心
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: 629eab8b-aead-4914-88f3-56981e24367f
+      # 配置中心
+      config:
+        server-addr: 127.0.0.1:8848
+        # 去 NACOS 中找 merchant-service.yaml 文件(spring.application.name + file-extension)，优先级最高
+        file-extension: yaml
+        namespace: 629eab8b-aead-4914-88f3-56981e24367f
+        group: SHANJUPAY_GROUP
+        ext-config:
+          - refresh: true
+            data-id: spring-boot-http.yaml
+            group: COMMON_GROUP
+          - refresh: true
+            data-id: spring-boot-starter-druid.yaml
+            group: COMMON_GROUP
+###################################################
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    map-underscore-to-camel-case: true
+  global-config:
+    db-config:
+      id-type: AUTO
+      field-strategy: default
+      column-like: true
+  type-aliases-package: com.liuxi.merchant.service.pojo
+###################################################
+dubbo:
+  scan:
+    # dubbo 服务扫描基准包
+    base-packages: com.liuxi
+  protocol:
+    port: 20890
+    name: dubbo
+  registry:
+    address: nacos://127.0.0.1:8848
+  consumer:
+    # 超时、检查、重试
+    timeout: 9000
+    check: false
+    retries: -1
+  application:
+    # dubbo qos端口配置 命令行注入
+    qos-port: 22340
