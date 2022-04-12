@@ -1,19 +1,19 @@
 package com.liuxi.merchant.application.controller;
 
 import com.liuxi.common.pojo.CommonErrorCode;
-import com.liuxi.common.util.PhoneUtil;
 import com.liuxi.merchant.api.MerchantService;
 import com.liuxi.merchant.api.dto.MerchantDto;
+import com.liuxi.merchant.api.vo.ResultVo;
 import com.liuxi.merchant.application.util.SmsUtils;
+import com.liuxi.merchant.application.vo.MerchantRegistryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Api(value = "商户平台‐商户相关", tags = "商户平台‐商户相关")
-public class MerchantController {
+public class MerchantController extends AbstractResultController<MerchantDto> {
 
     @Reference
     private MerchantService merchantService;
@@ -39,12 +39,7 @@ public class MerchantController {
     @ApiOperation(value = "发送验证码", notes = "随机生成六位验证码")
     @GetMapping("sendSms/{phoneNum}")
     public String sendSms(@PathVariable("phoneNum") String phoneNum) {
-        // 校验手机号格式
-        if (PhoneUtil.isMatches(phoneNum)) {
-            return SmsUtils.sendSms(phoneNum);
-        }
-        // 手机号码格式不正确
-        return CommonErrorCode.E_200224.getDesc();
+        return SmsUtils.sendSms(phoneNum);
     }
 
     @ApiOperation(value = "校验验证码", notes = "校验验证码，传入 手机号、验证码参数")
@@ -54,11 +49,28 @@ public class MerchantController {
     })
     @GetMapping("verify/code")
     public String verify(@RequestParam("phoneNum") String phoneNum, @RequestParam("code") String code) {
+        return SmsUtils.verify(phoneNum, code);
+    }
+
+    @ApiOperation(value = "商户注册", notes = "商户注册功能，传入手机号")
+    @ApiImplicitParam(value = "商户注册信息", name = "MerchantRegistryVo", required = true, dataType = "MerchantRegistryVo", paramType = "body")
+    @PostMapping("createMerchant")
+    public ResultVo<MerchantDto> createMerchant(@RequestBody MerchantRegistryVo merchantVo) {
         // 校验手机号格式
-        if (PhoneUtil.isMatches(phoneNum)) {
-            return SmsUtils.verify(phoneNum, code);
+        String mobileNum = merchantVo.getMobile();
+        String codeVerify = SmsUtils.verify(mobileNum, merchantVo.getVerifyCode());
+        // 验证码校验是否成功
+        if (StringUtils.isNotEmpty(codeVerify)) {
+            // 查看手机号是否存在
+            if (merchantService.queryMobileNumExist(mobileNum)) {
+                MerchantDto merchantDto = new MerchantDto();
+                BeanUtils.copyProperties(merchantVo, merchantDto);
+                return this.responseJson(200, "商户注册成功！", merchantService.createMerchant(merchantDto));
+            }
+            // 手机号已存在
+            return this.responseJson(CommonErrorCode.E_200203.getCode(), CommonErrorCode.E_200203.getDesc(), null);
         }
-        // 手机号码格式不正确
-        return CommonErrorCode.E_200224.getDesc();
+        // 验证码错误
+        return this.responseJson(CommonErrorCode.E_100102.getCode(), codeVerify, null);
     }
 }

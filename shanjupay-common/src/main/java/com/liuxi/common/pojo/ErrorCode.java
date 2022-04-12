@@ -20,5 +20,4 @@ public interface ErrorCode {
      * @return
      */
     String getDesc();
-
 }

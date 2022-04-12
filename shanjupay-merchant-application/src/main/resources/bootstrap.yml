@@ -43,7 +43,7 @@ dubbo:
     address: nacos://127.0.0.1:8848
   consumer:
     # 超时、检查、重试
-    timeout: 3000
+    timeout: 30000
     check: false
     retries: -1
   application:

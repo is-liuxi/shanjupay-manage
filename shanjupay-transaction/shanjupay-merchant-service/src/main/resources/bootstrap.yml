@@ -47,9 +47,11 @@ dubbo:
     address: nacos://127.0.0.1:8848
   consumer:
     # 超时、检查、重试
-    timeout: 9000
+    timeout: 90000
     check: false
     retries: -1
   application:
     # dubbo qos端口配置 命令行注入
     qos-port: 22340
+  cloud:
+    subscribed-services: ""
