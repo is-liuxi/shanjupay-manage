@@ -5,6 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * <p>
+ * map string 转换
+ * </P>
+ * @author liu xi
+ * @date 2022/4/11 21:13
+ */
 public class MapStringConvertUtil {
 
     //参数类型是Map<String,String> 支付需要用string的参数。

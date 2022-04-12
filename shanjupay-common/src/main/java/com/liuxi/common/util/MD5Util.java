@@ -3,7 +3,13 @@ package com.liuxi.common.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-
+/**
+ * <p>
+ * MD5
+ * </P>
+ * @author liu xi
+ * @date 2022/4/11 21:13
+ */
 public class MD5Util {
     /**
      * 获取字符串的MD5摘要计算结果

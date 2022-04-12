@@ -13,7 +13,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * <p>
+ * json操作
+ * </P>
+ * @author liu xi
+ * @date 2022/4/11 21:13
+ */
 public class JsonUtil {
 
     public static String objectTojson(Object object) {

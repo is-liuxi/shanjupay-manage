@@ -3,8 +3,11 @@ package com.liuxi.common.util;
 import java.math.BigDecimal;
 
 /**
- * com.util.AmountUtils
- * @description 金额元分之间转换工具类
+ * <p>
+ * 金额元分之间转换工具类
+ * </P>
+ * @author liu xi
+ * @date 2022/4/11 21:13
  */
 public class AmountUtil {
 

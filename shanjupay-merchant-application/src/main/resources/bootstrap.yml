@@ -3,6 +3,14 @@ server:
   # max-http-header-size: 100kb
 ###################################################
 spring:
+  redis:
+    host: 192.168.92.121
+    port: 6380
+    password:
+    # 指定redis的分库（共16个0到15）
+    database: 15
+    lettuce:
+      shutdown-timeout: 0ms
   application:
     name: merchant-application
   cloud:
@@ -44,3 +52,6 @@ dubbo:
 ###################################################
 logging:
   config: classpath:log4j2.xml
+  level:
+    com:
+      liuxi: info
