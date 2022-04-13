@@ -1,4 +1,4 @@
 /target
 /logs
 *.iml
-aliyun-config.properties
+/*/*/*/aliyun-config.properties
