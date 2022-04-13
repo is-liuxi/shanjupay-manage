@@ -12,7 +12,7 @@
     <artifactId>shanjupay-transaction</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>shanjupay-merchant-service</module>
+        <module>shanjupay-merchant-com.liuxi.merchant.service</module>
         <module>shanjupay-merchant-api</module>
     </modules>
 
