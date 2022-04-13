@@ -2,4 +2,4 @@
 /logs
 .idea
 *.iml
-aliyun-config.properties
+aliyun*.properties
