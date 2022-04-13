@@ -1,10 +1,13 @@
 package com.liuxi.merchant.application.controller;
 
+import com.aliyun.oss.OSS;
 import com.liuxi.common.pojo.CommonErrorCode;
 import com.liuxi.merchant.api.MerchantService;
 import com.liuxi.merchant.api.dto.MerchantDto;
 import com.liuxi.merchant.api.vo.ResultVo;
 import com.liuxi.merchant.application.util.SmsUtils;
+import com.liuxi.merchant.application.util.UploadImageUtils;
+import com.liuxi.merchant.application.vo.AliYun;
 import com.liuxi.merchant.application.vo.MerchantRegistryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -13,7 +16,11 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * <p>
@@ -28,6 +35,12 @@ public class MerchantController extends AbstractResultController<MerchantDto> {
 
     @Reference
     private MerchantService merchantService;
+
+    @Autowired
+    private OSS oss;
+
+    @Autowired
+    private AliYun aliYun;
 
     @ApiOperation(value = "根据 ID 查询商户信息", notes = "商户 ID 必填")
     @GetMapping("merchant/{id}")
@@ -72,5 +85,13 @@ public class MerchantController extends AbstractResultController<MerchantDto> {
         }
         // 验证码错误
         return this.responseJson(CommonErrorCode.E_100102.getCode(), codeVerify, null);
+    }
+
+    @PostMapping("uploadImg")
+    @ApiOperation(value = "图片上传", notes = "文件上转，name=file")
+    public String uploadImgToOss(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+        String filePath = UploadImageUtils.filePath(multipartFile.getOriginalFilename());
+        oss.putObject(aliYun.getBucketName(), filePath, multipartFile.getInputStream());
+        return aliYun.getPrefix() + filePath;
     }
 }

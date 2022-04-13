@@ -1,6 +1,7 @@
 package com.liuxi.common.util;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayInputStream;
@@ -22,20 +23,20 @@ public class RSAUtil {
      * RSA签名
      * @param content       待签名数据
      * @param privateKey    商户私钥
-     * @param input_charset 编码格式
+     * @param inputCharset 编码格式
      * @return 签名值
      */
-    public static String sign(String content, String privateKey, String input_charset) {
+    public static String sign(String content, String privateKey, String inputCharset) {
         try {
-            PKCS8EncodedKeySpec priPKCS8 = new PKCS8EncodedKeySpec(Base64.decode(privateKey));
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.decode(privateKey));
             KeyFactory keyf = KeyFactory.getInstance("RSA");
-            PrivateKey priKey = keyf.generatePrivate(priPKCS8);
+            PrivateKey priKey = keyf.generatePrivate(keySpec);
 
             Signature signature = Signature
                     .getInstance(SIGN_ALGORITHMS);
 
             signature.initSign(priKey);
-            signature.update(content.getBytes(input_charset));
+            signature.update(content.getBytes(inputCharset));
 
             byte[] signed = signature.sign();
 
