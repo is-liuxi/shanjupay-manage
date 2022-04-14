@@ -4,17 +4,22 @@ import com.aliyun.oss.OSS;
 import com.liuxi.common.pojo.CommonErrorCode;
 import com.liuxi.merchant.api.MerchantService;
 import com.liuxi.merchant.api.dto.MerchantDto;
+import com.liuxi.merchant.api.exception.BusinessException;
 import com.liuxi.merchant.api.vo.ResultVo;
+import com.liuxi.merchant.application.util.SecurityUtil;
 import com.liuxi.merchant.application.util.SmsUtils;
 import com.liuxi.merchant.application.util.UploadImageUtils;
 import com.liuxi.merchant.application.vo.AliYun;
+import com.liuxi.merchant.application.vo.MerchantDetailsVo;
 import com.liuxi.merchant.application.vo.MerchantRegistryVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +36,7 @@ import java.io.IOException;
  */
 @RestController
 @Api(value = "商户平台‐商户相关", tags = "商户平台‐商户相关")
+@Slf4j
 public class MerchantController extends AbstractResultController<MerchantDto> {
 
     @Reference
@@ -89,9 +95,27 @@ public class MerchantController extends AbstractResultController<MerchantDto> {
 
     @PostMapping("uploadImg")
     @ApiOperation(value = "图片上传", notes = "文件上转，name=file")
-    public String uploadImgToOss(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+    public String uploadImgToOss(@RequestParam("file") MultipartFile multipartFile) {
         String filePath = UploadImageUtils.filePath(multipartFile.getOriginalFilename());
-        oss.putObject(aliYun.getBucketName(), filePath, multipartFile.getInputStream());
+        try {
+            oss.putObject(aliYun.getBucketName(), filePath, multipartFile.getInputStream());
+        } catch (IOException e) {
+            log.info("文件上传失败：{}", e.getMessage());
+            e.printStackTrace();
+            throw new BusinessException(CommonErrorCode.E_100106);
+        }
         return aliYun.getPrefix() + filePath;
+    }
+
+    @PostMapping("applyMerchant")
+    @ApiOperation(value = "商家资质申请", notes = "商户认证资料")
+    public ResultVo<MerchantDto> applyMerchant(@RequestBody MerchantDetailsVo merchantDetailsVo) {
+        // 租户 ID
+        Long merchantId = SecurityUtil.getMerchantId();
+        MerchantDto dto = new MerchantDto();
+        BeanUtils.copyProperties(merchantDetailsVo, dto);
+        dto.setId(merchantId);
+        merchantService.applyMerchant(merchantId, dto);
+        return this.responseJson(HttpStatus.SC_OK, "success", null);
     }
 }

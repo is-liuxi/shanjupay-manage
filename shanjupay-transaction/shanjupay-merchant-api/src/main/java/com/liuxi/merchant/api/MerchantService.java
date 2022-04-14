@@ -31,4 +31,11 @@ public interface MerchantService {
      * @return
      */
     boolean queryMobileNumExist(String phoneNum);
+
+    /**
+     * 资质申请接口。根据 id 修改值
+     * @param merchantId
+     * @param merchantDto
+     */
+    void applyMerchant(long merchantId, MerchantDto merchantDto);
 }

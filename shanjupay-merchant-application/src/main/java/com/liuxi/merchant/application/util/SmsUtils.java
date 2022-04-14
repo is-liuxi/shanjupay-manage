@@ -2,9 +2,8 @@ package com.liuxi.merchant.application.util;
 
 import com.liuxi.common.pojo.CommonErrorCode;
 import com.liuxi.common.util.PhoneUtil;
+import com.liuxi.merchant.api.exception.BusinessException;
 import com.liuxi.merchant.application.config.SpringContextConfig;
-import com.liuxi.merchant.application.exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.UUID;

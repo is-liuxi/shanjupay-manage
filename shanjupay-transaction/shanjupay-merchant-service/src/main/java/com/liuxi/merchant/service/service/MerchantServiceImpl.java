@@ -50,4 +50,22 @@ public class MerchantServiceImpl implements MerchantService {
         wrapper.eq(Merchant::getMobile, phoneNum);
         return merchantMapper.selectOne(wrapper) == null;
     }
+
+    @Override
+    public void applyMerchant(long merchantId, MerchantDto merchantDto) {
+        Merchant merchantData = merchantMapper.selectById(merchantDto.getId());
+        if (merchantData == null) {
+            throw new RuntimeException("账号不存在");
+        }
+
+        Merchant merchant = new Merchant();
+        BeanUtils.copyProperties(merchantDto, merchant);
+        // 1-已申请待审核
+        merchant.setAuditStatus("1");
+        // 从数据库中拿，申请时不能修改这些值
+        merchant.setId(merchantData.getId());
+        merchant.setMobile(merchantData.getMobile());
+        merchant.setTenantId(merchantData.getTenantId());
+        merchantMapper.updateById(merchant);
+    }
 }

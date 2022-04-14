@@ -3,7 +3,7 @@ server:
 ###################################################
 spring:
   application:
-    name: merchant-com.liuxi.merchant.service
+    name: merchant-service
   cloud:
     nacos:
       # 注册中心
@@ -13,7 +13,7 @@ spring:
       # 配置中心
       config:
         server-addr: 127.0.0.1:8848
-        # 去 NACOS 中找 merchant-com.liuxi.merchant.service.yaml 文件(spring.application.name + file-extension)，优先级最高
+        # 去 NACOS 中找 merchant-service.yaml 文件(spring.application.name + file-extension)，优先级最高
         file-extension: yaml
         namespace: 629eab8b-aead-4914-88f3-56981e24367f
         group: SHANJUPAY_GROUP
